@@ -60,7 +60,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'docker', variable: 'docker')]) {
     sh 'docker login -u bharath0812 -p ${docker}'
     sh 'docker push bharath0812/newrepo:5.0'
-}
+
 }
             }
         }
