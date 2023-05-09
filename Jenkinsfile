@@ -35,6 +35,7 @@ pipeline {
             }
         }
          stage('scancode with sonarqube') {
+            when { expression { params.skip_test != false } }
             steps {
                  withSonarQubeEnv('sonar'){
                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Devops-ultimate \
@@ -43,11 +44,30 @@ pipeline {
                }
             }
         }
+          stage('build docker image') {
+
+            steps {
+                sh 'docker build -t bharath0812/newrepo:5.0 .'
+            }
+        }
+           stage('docker image scan with trivy') {
+            steps {
+                sh 'trivy scan bharath0812/newrepo:5.0'
+            }
+        }
+          stage('docker image push to dockerhub') {
+            steps {
+                withDockerRegistry(credentialsId: 'dokerhub') {
+    sh 'docker push bharath0812/newrepo:5.0'
+}
+            }
+        }
+            stage('run the docker image') {
+            steps {
+                sh 'docker run -itd --name onlineapp -p 8081:8080 bharath0812/newrepo:5.0'
+                
+            }
+        }
           
         }
-   post {
-  always {
-    slackSend channel: 'dev', message: "please find the status of build started ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}"
-  }
-}
 }
