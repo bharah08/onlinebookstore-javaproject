@@ -52,7 +52,7 @@ pipeline {
         }
            stage('docker image scan with trivy') {
             steps {
-                sh 'trivy scan bharath0812/newrepo:5.0'
+                sh 'trivy image bharath0812/newrepo:5.0'
             }
         }
           stage('docker image push to dockerhub') {
