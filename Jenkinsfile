@@ -45,6 +45,7 @@ pipeline {
             }
         }
           stage('build docker image') {
+            when { expression { params.skip_test != false } }
 
             steps {
                 sh 'docker build -t bharath0812/newrepo:5.0 .'
