@@ -1,45 +1,22 @@
 apiVersion: apps/v1
-
 kind: Deployment
-
 metadata:
-
-  name: webapp-deployment
-
-  labels:
-
-    app: mavenwebapp
-
+  name: springboot-crud-deployment
 spec:
-
-  replicas: 3
-
   selector:
-
     matchLabels:
-
-      app: mavenwebapp
-
+      app: springboot-k8s-mysql
+  replicas: 3
   template:
-
     metadata:
-
       labels:
-
-        app: mavenwebapp
-
+        app: springboot-k8s-mysql
     spec:
-
       containers:
-
-      - name: mavenwebapp
-
-        image: bharath/newrepo:5.0
-
-        ports:
-
-        - containerPort: 8080
-
+        - name: springboot-crud-k8s
+          image: bharath0812/newrepo:5.0
+          ports:
+            - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
