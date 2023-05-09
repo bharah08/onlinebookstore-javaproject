@@ -68,6 +68,7 @@ pipeline {
             }
         }
             stage('docker cleanup') {
+                when { expression { params.skip_test != false } }
             steps {
                sh 'docker stop $(docker ps -a -q)'
                sh 'docker rm $(docker ps -a -q)'
@@ -83,9 +84,4 @@ pipeline {
         }
           
         }
-        post {
-  always {
-    slackSend channel: 'dev', message: "please find the status of build: ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}"
-  }
-}
 }
