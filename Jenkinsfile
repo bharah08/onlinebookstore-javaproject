@@ -52,11 +52,13 @@ pipeline {
             }
         }
            stage('docker image scan with trivy') {
+            when { expression { params.skip_test != false } }
             steps {
                 sh 'trivy image bharath0812/newrepo:5.0'
             }
         }
           stage('docker image push to dockerhub') {
+            when { expression { params.skip_test != false } }
             steps {
                 withCredentials([string(credentialsId: 'docker', variable: 'docker')]) {
     sh 'docker login -u bharath0812 -p ${docker}'
@@ -65,12 +67,25 @@ pipeline {
 }
             }
         }
-            stage('run the docker image') {
+            stage('docker cleanup') {
             steps {
-                sh 'docker run -itd --name onlineapp -p 8081:8080 bharath0812/newrepo:5.0'
+               sh 'docker stop $(docker ps -a -q)'
+               sh 'docker rm $(docker ps -a -q)'
+                sh 'docker rmi $(docker images -a -q)'
+                
+            }
+        }
+          stage('deploy k8s') {
+            steps {
+                kubernetesDeploy (configs: 'deploy.yml', kubeconfigId: 'k8s')
                 
             }
         }
           
         }
+        post {
+  always {
+    slackSend channel: 'dev', message: "please find the status of build: ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}"
+  }
+}
 }
