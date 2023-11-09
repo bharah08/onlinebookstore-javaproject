@@ -5,16 +5,16 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: springboot-k8s-mysql
+      app: java
   replicas: 3
   template:
     metadata:
       labels:
-        app: springboot-k8s-mysql
+        app: java
     spec:
       containers:
         - name: springboot-crud-k8s
-          image: bharath0812/newrepo:5.0
+          image: bharath0812/newrepo:8.0
           ports:
             - containerPort: 8080
 ---
@@ -25,7 +25,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-   app: mavenwebapp
+   app: java
   ports:
    - port: 8081
      targetPort: 8080
