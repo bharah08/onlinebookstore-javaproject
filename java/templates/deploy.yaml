@@ -1,31 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: springboot-crud-deployment
+  name: java-deployment
+  labels:
+    app: java
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: java
-  replicas: 3
   template:
     metadata:
       labels:
         app: java
     spec:
       containers:
-        - name: springboot-crud-k8s
-          image: bharath0812/newrepo:8.0
-          ports:
-            - containerPort: 8080
+      - name: nginx
+        image: bharath0812/java:8.0
+        ports:
+        - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
 metadata:
- name: mavenwebappsvc
+ name: httpdservice
 spec:
-  type: NodePort
-  selector:
+ type: NodePort
+ selector:
    app: java
+ ports:
+   - port: 80
+     targetPort: 8080
+     protocol: TCP
   ports:
    - port: 8081
      targetPort: 8080
