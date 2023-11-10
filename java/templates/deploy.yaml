@@ -1,22 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
- name: mavenwebappdeployment
+  name: nginx-deployment
+  labels:
+    app: nginx
 spec:
- replicas: 1
- strategy: 
-    type: Recreate
- selector: 
-   matchLabels: 
-     app: mavenwebapp
- template:
-  metadata:
-   name: mavenwebapppod
-   labels:
-     app: mavenwebapp	 
-  spec: 
-    containers:
-    - name: mavenwebapp
-      image: bharath0812/java:8.0
-      ports:
-      - containerPort: 8080
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: bharath0812/java:10.0
+        ports:
+        - containerPort: 8080
