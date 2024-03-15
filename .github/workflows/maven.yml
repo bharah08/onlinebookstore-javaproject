@@ -35,15 +35,15 @@ jobs:
       with:
         projectBaseDir: .
         args: >
-          sonar.verbose=true
-          sonar.projectKey=devops-test1234_woapp
-          sonar.organization=devops-test1234
-          sonar.projectName=woapp
-          sonar.language=java
-          sonar.sourceEncoding=UTF-8
-          sonar.sources=.
-          sonar.java.binaries=.
-          sonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+          -Dsonar.verbose=true
+          -Dsonar.projectKey=devops-test1234_woapp
+          -Dsonar.organization=devops-test1234
+          -Dsonar.projectName=woapp
+          -Dsonar.language=java
+          -Dsonar.sourceEncoding=UTF-8
+          -Dsonar.sources=.
+          -Dsonar.java.binaries=.
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
