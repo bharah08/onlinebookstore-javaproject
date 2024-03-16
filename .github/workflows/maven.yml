@@ -29,5 +29,12 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B install --file pom.xml
+    - name: Deploy WAR to Tomcat
+      uses: peter-evans/deploy-war@v2
+      with:
+        server-url: ${{ secrets.TOMCAT_URL }}
+        username: ${{ secrets.TOMCAT_USERNAME }}
+        password: ${{ secrets.TOMCAT_PASSWORD }}
+        war-file: target/onlinebookstore.war
 
     
