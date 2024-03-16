@@ -37,21 +37,10 @@ jobs:
     - name: Build Docker Image
       run: docker build -f Dockerfile -t bharath0812/java:1.0 .
 
-    - name: Docker Scout Scan
-      uses: docker/scout-action@v1.0.9
+    - name: Trivy Scan
+      uses: aquasecurity/trivy-action@v0.2.0
       with:
-        dockerhub-user: ${{ secrets.DOCKER_USERNAME }}
-        dockerhub-password: ${{ secrets.DOCKER_PASSWORD }}
-        command: quickview,cves
-        only-severities: critical,high
-        sarif-file: scout-report.sarif
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: docker-scout-findings
-        path: scout-report.sarif
+        image-ref: bharath0812/java:1.0
     - name: Build & Push to Docker Hub
       uses: opspresso/action-docker@master
       with:
