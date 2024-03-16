@@ -17,7 +17,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v3
@@ -29,34 +29,7 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B install --file pom.xml
-    - name: Docker Build Tag Publish
-      uses: bitovi/github-actions-docker-publish@v1.0.7
-      with:
-        image_tag: v1
-        repo_name: bharath0812/java
-        docker_username: ${{ secrets.DOCKER_USERNAME }}
    
-        docker_password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-          image-ref: 'bharath0812/java:v1'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
-    - name: Build & Push to Docker Hub
-      uses: opspresso/action-docker@master
-      with:
-        args: --docker
-      env:
-        USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        TAG_NAME: "1.0"
-        BUILDX: "true"
-    
-    
     
     
     
