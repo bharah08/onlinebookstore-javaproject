@@ -29,18 +29,42 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B install --file pom.xml
-    - name: Build and scan image
-      uses: dentsusoken/build-and-scan-image@main
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      uses: docker-practice/actions-setup-docker@v1
       with:
-    # Image name and optionally tag in "name:tag" format
-        tag: "bharath0812/java:1.0"
-        path: "."
-        dockerfile: Dockerfile
-        trivy-enable: "true"
-        trivy-version: "0.23.0"
-        trivy-severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-        trivy-vuln-type: os,library
-        trivy-ignore-unfixed: "false"
+        docker_version: '20.10.7'
+
+    - name: Build Docker Image
+      run: docker build -f Dockerfile -t bharath0812/java:1.0 .
+
+    - name: Docker Scout Scan
+      uses: docker/scout-action@v1.0.9
+      with:
+        dockerhub-user: ${{ secrets.DOCKER_USERNAME }}
+        dockerhub-password: ${{ secrets.DOCKER_PASSWORD }}
+        command: quickview,cves
+        only-severities: critical,high
+        sarif-file: scout-report.sarif
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: docker-scout-findings
+        path: scout-report.sarif
+    - name: Build & Push to Docker Hub
+      uses: opspresso/action-docker@master
+      with:
+        args: --docker
+      env:
+        USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        TAG_NAME: "1.0"
+        BUILDX: "true"
+    
     
     
     
