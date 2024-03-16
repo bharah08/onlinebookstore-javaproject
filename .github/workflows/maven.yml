@@ -29,18 +29,20 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B install --file pom.xml
-    - name: Set up Docker
-      uses: docker-practice/actions-setup-docker@v1
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Build an image from Dockerfile
+      run: |
+          docker build -t bharath0812/java:1.0 .
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
       with:
-        docker_version: '20.10.7'
-
-    - name: Build Docker Image
-      run: docker build -f Dockerfile -t bharath0812/java:1.0 .
-
-    - name: Trivy Scan
-      uses: aquasecurity/trivy-action@v0.2.0
-      with:
-        image-ref: bharath0812/java:1.0
+          image-ref: 'bharath0812/java:1.0'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
     - name: Build & Push to Docker Hub
       uses: opspresso/action-docker@master
       with:
