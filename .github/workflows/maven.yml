@@ -29,11 +29,11 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B install --file pom.xml
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Build an image from Dockerfile
-      run: |
-          docker build -t bharath0812/java:1.0 .
+    - name: Docker Build Tag Publish
+      uses: bitovi/github-actions-docker-publish@v1.0.7
+      with:
+        image_tag: v1.0 
+        repo_name: bharath0812/java
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
