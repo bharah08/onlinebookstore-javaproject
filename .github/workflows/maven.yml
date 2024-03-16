@@ -35,7 +35,7 @@ jobs:
     # Image name and optionally tag in "name:tag" format
         tag: "bharath0812/java:1.0"
         path: "."
-        dockerfile: dockerfile
+        dockerfile: Dockerfile
         trivy-enable: "true"
         trivy-version: "0.23.0"
         trivy-severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
