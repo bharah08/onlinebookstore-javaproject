@@ -50,6 +50,8 @@ jobs:
       env:
        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      with:
+        scanMetadataReportFile: target/sonar/report-task.txt
     - name: ecr login
       run: aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 211125513262.dkr.ecr.ap-south-1.amazonaws.com
     - name: build docker image
