@@ -30,8 +30,15 @@ jobs:
       with:
         projectBaseDir: .
         args: >
-          -Dsonar.organization=my-org
-          -Dsonar.projectKey=my-Java-web-app
+          -Dsonar.verbose=true
+          -Dsonar.projectKey=devops-test1234_woapp
+          -Dsonar.organization=devops-test1234
+          -Dsonar.projectName=woapp
+          -Dsonar.language=java
+          -Dsonar.sourceEncoding=UTF-8
+          -Dsonar.sources=.
+          -Dsonar.java.binaries=target/classes
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
