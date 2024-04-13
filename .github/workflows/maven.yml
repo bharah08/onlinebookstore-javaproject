@@ -21,10 +21,34 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
     - name: Build with Maven
-      run: mvn clean install
+      run: |
+        PATH="/opt/apache-maven-3.6.3/bin:$PATH"
+        mvn clean install
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      with:
+        projectBaseDir: .
+        args: >
+          -Dsonar.organization=my-org
+          -Dsonar.projectKey=my-Java-web-app
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    - name: SonarQube Quality Gate check
+      id: sonarqube-quality-gate-check
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      # Force to fail step after specific time.
+      timeout-minutes: 5
+      env:
+       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    - name: ecr login
+      run: aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 211125513262.dkr.ecr.ap-south-1.amazonaws.com
+    - name: build docker image
+      run: | 
+        docker build -t 211125513262.dkr.ecr.ap-south-1.amazonaws.com/test:1.0 .
+    - name: docker image scan by trivy
+      run: trivy image 211125513262.dkr.ecr.ap-south-1.amazonaws.com/test:1.0 > test.txt
+    - name: docker image push to ecr
+      run: docker push 211125513262.dkr.ecr.ap-south-1.amazonaws.com/test:1.0
